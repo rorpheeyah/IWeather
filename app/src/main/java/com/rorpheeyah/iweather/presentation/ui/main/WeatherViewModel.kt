@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rorpheeyah.iweather.domain.location.LocationTracker
 import com.rorpheeyah.iweather.domain.repository.WeatherRepository
 import com.rorpheeyah.iweather.domain.util.Resource
 import com.rorpheeyah.iweather.domain.weather.WeatherData
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    private val locationTracker: LocationTracker
     ): ViewModel(){
 
     var state by mutableStateOf(WeatherState())
@@ -26,32 +28,34 @@ class WeatherViewModel @Inject constructor(
             state = state.copy(isLoading = true, error = null)
             weatherDataState = weatherDataState.copy(isLoading = true, error = null)
 
-            when(val result = repository.getWeatherData(35.179554, 129.075638)){
-                is Resource.Success ->{
-                    state = state.copy(
-                        weatherInfo = result.data,
-                        isLoading = false,
-                        error = null
-                    )
+            locationTracker.getCurrentLocation()?.let { location ->
+                when(val result = repository.getWeatherData(location.latitude, location.longitude)){
+                    is Resource.Success ->{
+                        state = state.copy(
+                            weatherInfo = result.data,
+                            isLoading = false,
+                            error = null
+                        )
 
-                    weatherDataState = weatherDataState.copy(
-                        weatherData = state.weatherInfo?.currentWeatherData,
-                        isLoading = false,
-                        error = null
-                    )
+                        weatherDataState = weatherDataState.copy(
+                            weatherData = state.weatherInfo?.currentWeatherData,
+                            isLoading = false,
+                            error = null
+                        )
 
-                    state.weatherInfo?.currentWeatherData?.let {
-                        currentWeatherData = it
+                        state.weatherInfo?.currentWeatherData?.let {
+                            currentWeatherData = it
+                        }
+
                     }
 
-                }
-
-                is Resource.Error ->{
-                    state = state.copy(
-                        weatherInfo = null,
-                        isLoading = true,
-                        error = result.message
-                    )
+                    is Resource.Error ->{
+                        state = state.copy(
+                            weatherInfo = null,
+                            isLoading = true,
+                            error = result.message
+                        )
+                    }
                 }
             }
         }

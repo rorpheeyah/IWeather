@@ -1,5 +1,8 @@
 package com.rorpheeyah.iweather.di
 
+import android.app.Application
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.rorpheeyah.iweather.data.remote.weather.WeatherApi
 import dagger.Module
 import dagger.Provides
@@ -30,5 +33,11 @@ object AppModule {
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFusedLocationProviderClient(app: Application) : FusedLocationProviderClient{
+        return LocationServices.getFusedLocationProviderClient(app)
     }
 }
