@@ -13,4 +13,4 @@ Weather App is based on the MVI architecture and the Repository pattern.
 ## Open-meteo 
 [Open-meteo](https://open-meteo.com/en) offers free weather forecast APIs for open-source developers and non-commercial use. No API key is required.
 
-![ezgif com-optimize](https://im.ezgif.com/tmp/ezgif-1-730b5bb5a5.gif)
+![(https://im.ezgif.com/tmp/ezgif-1-730b5bb5a5.gif)](https://raw.githubusercontent.com/rorpheeyah/IWeather/722d12c04e0659b4fcad47da3434a27879aacaa6/demo.gif)
